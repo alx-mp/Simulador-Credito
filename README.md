@@ -1,4 +1,6 @@
 # Simulador de Crédito
+![image](https://github.com/user-attachments/assets/88691513-cf63-4d8e-a276-07288cceb533)
+![image](https://github.com/user-attachments/assets/85195713-b545-4b6b-82ee-98dad946d914)
 
 Un simulador de crédito interactivo desarrollado con HTML, JavaScript y Tailwind CSS que permite a los usuarios calcular diferentes tipos de préstamos y visualizar sus tablas de amortización.
 
