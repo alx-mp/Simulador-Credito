@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./output.css" rel="stylesheet" />
+    <title>Simulador de Credito</title>
+  </head>
+  <body>
+    <h1
+      class="text-3xl font-bold mt-10 py-2.5 w-full mx-auto max-w-4xl px-6 my-6"
+    >
+      SIMULADOR DE CREDITO
+    </h1>
+    <form class="font-[sans-serif] text-[#333] max-w-4xl mx-auto px-6 my-6">
+      <div class="grid sm:grid-cols-2 gap-10">
+        <div class="relative flex items-center">
+          <label class="text-[13px] absolute top-[-10px] left-0 font-semibold"
+            >¿Qué tipo de crédito esta buscando?</label
+          >
+          <div
+            class="mt-4 ml-0 flex items-center border-2 focus-within:border-[#007bff] rounded-full font-[sans-serif] max-w-sm mx-auto"
+          >
+            <select
+              id="tipoCredito"
+              onchange="updateCreditInfo()"
+              class="px-3 py-3 text-[#333] w-full text-sm outline-none rounded-full"
+              aria-label="Tipo de Crédito"
+            >
+              <option value="" selected disabled>Tipo de Credito</option>
+            </select>
+            <div class="relative">
+              <label
+                type="button"
+                id="porcentajeCredito"
+                class="px-5 border-r-1 text-[#333] text-sm flex items-center"
+                >%</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="relative flex items-center">
+          <label class="text-[13px] absolute top-[-10px] left-0 font-semibold"
+            >Monto que dinero que necesita</label
+          >
+          <label
+            class="mt-4 ml-0 flex items-center border-2 focus-within:border-[#007bff] rounded-full font-[sans-serif] max-w-sm mx-auto"
+          >
+            <div class="relative">
+              <label
+                type="button"
+                class="px-5 border-r-2 text-[#333] text-sm flex items-center"
+                >USD
+              </label>
+            </div>
+            <input
+              id="amount"
+              type="text"
+              placeholder="Monto"
+              class="px-3 py-3 text-[#333] w-full text-sm outline-none rounded-full"
+              onblur="validarFormatoIngreso(this)"
+              oninput="validarNumerosIngreso(this)"
+            />
+            <p id="rangoMonto" class="m-2 text-[13px] text-[#333]"></p>
+          </label>
+        </div>
+
+        <div class="relative flex items-center">
+          <label class="text-[13px] absolute top-[-10px] left-0 font-semibold"
+            >¿En cuanto tiempo quiere pagarlo?</label
+          >
+          <label
+            class="mt-4 ml-0 flex items-center border-2 focus-within:border-[#007bff] rounded-full font-[sans-serif] max-w-sm mx-auto"
+          >
+            <div class="relative">
+              <label
+                type="button"
+                class="px-5 border-r-2 text-[#333] text-sm flex items-center"
+                >Meses
+              </label>
+            </div>
+            <input
+              id="numMeses"
+              type="number"
+              placeholder="Número"
+              class="px-3 py-3 text-[#333] w-full text-sm outline-none rounded-full"
+              onblur="validarMeses(this)"
+              oninput="validarNumerosIngreso(this)"
+            />
+            <p
+              id="rangoMeses"
+              class="mt-2 mr-3 mb-2 text-[13px] text-[#333]"
+            ></p>
+          </label>
+        </div>
+
+        <div class="relative flex items-center">
+          <label class="text-[13px] absolute top-[-10px] left-0 font-semibold"
+            >Sistema de amortización</label
+          >
+          <div
+            class="mt-4 ml-0 flex items-center border-2 focus-within:border-[#007bff] rounded-full font-[sans-serif] max-w-sm mx-auto"
+          >
+            <select
+              id="tipoAmortizacion"
+              onchange="updateCreditInfo()"
+              class="px-3 py-3 text-[#333] w-full text-sm outline-none rounded-full"
+              aria-label="Tipo de Crédito"
+            >
+              <option value="" selected disabled>Tipo de Amortización</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button
+        id="btnEnviar"
+        type="button"
+        class="mt-10 px-2 py-2.5 w-52 rounded text-sm font-semibold bg-[#333] text-white hover:bg-[#203969]"
+      >
+        Enviar
+      </button>
+      <button
+        id="btnLimpiar"
+        type="button"
+        class="mt-10 ml-5 px-2 py-2.5 w-52 rounded text-sm font-semibold bg-[#c63333] text-white hover:bg-[#203969]"
+      >
+        Limpiar
+      </button>
+    </form>
+
+
+    <!-- TASA DE INTERES -->
+
+    <h2  class="text-3xl font-bold mt-10 py-2.5 w-full mx-auto max-w-4xl px-6 my-6">Tabla de Credito</h2>
+    
+
+    <!-- PROYECCION DE LA TABLA DE VALORES -->
+
+    <div class="overflow-x-auto max-w-4xl mx-auto px-6 my-6">
+      <table id="tablaCredito" class="min-w-full bg-white font-[sans-serif] overflow-auto">
+        <thead class="bg-gray-800 whitespace-nowrap">
+          <tr>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">
+              Cuota No.
+            </th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">
+              Abono Capital
+            </th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">
+              Interés
+            </th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">
+              Seguro Desg.
+            </th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">
+              Cuota
+            </th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-white">
+              Saldo
+            </th>
+          </tr>
+        </thead>
+        <tbody class="whitespace-nowrap divide-y divide-gray-200 overflow-auto">
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+  <script src="Funciones.js"></script>
+</html>
